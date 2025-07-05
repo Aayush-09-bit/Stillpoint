@@ -31,34 +31,35 @@ function App() {
     
     // Only update streak if it hasn't been updated today
     if (lastUpdate !== today) {
-      // Get all entry dates sorted in descending order (most recent first)
+      // Get all entry dates sorted in ascending order (oldest first)
       const entryDates = entries
         .map(entry => entry.date)
         .sort()
-        .reverse();
+        .map(date => new Date(date));
 
       let newStreak = 0;
       const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
 
       // Check if there's an entry for today
-      const hasTodayEntry = entryDates.includes(today);
-      
+      const hasTodayEntry = entryDates.some(date => 
+        format(date, 'yyyy-MM-dd') === today
+      );
+
       if (hasTodayEntry) {
-        // Start counting from today
         newStreak = 1;
-        
-        // Check consecutive days backwards from today
-        for (let i = 1; i < entryDates.length; i++) {
-          const currentEntryDate = new Date(entryDates[i]);
-          const expectedDate = new Date(todayDate);
-          expectedDate.setDate(todayDate.getDate() - newStreak);
-          
-          const currentDateString = format(currentEntryDate, 'yyyy-MM-dd');
-          const expectedDateString = format(expectedDate, 'yyyy-MM-dd');
-          
-          if (currentDateString === expectedDateString) {
+        let previousDate = new Date(todayDate);
+        previousDate.setDate(previousDate.getDate() - 1);
+
+        // Check consecutive days backwards from yesterday
+        for (let i = entryDates.length - 1; i >= 0; i--) {
+          const entryDate = new Date(entryDates[i]);
+          entryDate.setHours(0, 0, 0, 0);
+
+          if (format(entryDate, 'yyyy-MM-dd') === format(previousDate, 'yyyy-MM-dd')) {
             newStreak++;
-          } else {
+            previousDate.setDate(previousDate.getDate() - 1);
+          } else if (entryDate < previousDate) {
             // Found a gap, stop counting
             break;
           }
@@ -66,24 +67,28 @@ function App() {
       } else {
         // No entry today, check if we need to reset streak
         if (entryDates.length > 0) {
-          const lastEntryDate = new Date(entryDates[0]);
-          const daysSinceLastEntry = differenceInDays(todayDate, lastEntryDate);
-          
-          if (daysSinceLastEntry > 1) {
-            // More than 1 day gap, reset streak to 0
-            newStreak = 0;
-          } else {
-            // Keep current streak if it's just 1 day (yesterday)
+          const lastEntryDate = new Date(entryDates[entryDates.length - 1]);
+          lastEntryDate.setHours(0, 0, 0, 0);
+          const yesterday = new Date(todayDate);
+          yesterday.setDate(yesterday.getDate() - 1);
+
+          if (format(lastEntryDate, 'yyyy-MM-dd') === format(yesterday, 'yyyy-MM-dd')) {
+            // Entry from yesterday, keep current streak
             newStreak = currentUser.streak;
+          } else {
+            // No entry yesterday, reset streak
+            newStreak = 0;
           }
         }
       }
 
-      // Update user with new streak (removed totalEntries)
-      updateUser({ 
-        streak: newStreak,
-        lastStreakUpdate: new Date().toISOString()
-      });
+      // Only update if streak has changed
+      if (newStreak !== currentUser.streak) {
+        updateUser({ 
+          streak: newStreak,
+          lastStreakUpdate: new Date().toISOString()
+        });
+      }
     }
   }, [entries, currentUser?.id, currentUser?.streak, currentUser?.lastStreakUpdate, updateUser]);
 
