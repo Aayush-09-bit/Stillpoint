@@ -117,24 +117,7 @@ export function Header({ user, currentView, onViewChange, onLogout }: HeaderProp
               </p>
             </div>
             
-            {/* Bolt.new Logo - Theme Adaptive */}
-            <a
-              href="https://bolt.new/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-all duration-300 transform hover:scale-110 hover:opacity-80"
-              title="Powered by Bolt.new"
-            >
-              <img
-                src={user.preferences.theme === 'dark' 
-                  ? '/white_circle_360x360 copy copy.png' 
-                  : '/black_circle_360x360 copy copy.png'
-                }
-                alt="Bolt.new"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-lg"
-              />
-            </a>
-            
+           
             <button
               onClick={onLogout}
               className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:scale-110 ${
