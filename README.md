@@ -1,4 +1,4 @@
-## 📖 StillPoint - Your Mindful Journal
+# 📖 StillPoint - Your Mindful Journal
 A beautiful, modern journaling web application built with React and TypeScript for mindfulness and personal reflection.
 
 ![React](https://img.shields.io/badge/React-18.3+-blue.svg)
