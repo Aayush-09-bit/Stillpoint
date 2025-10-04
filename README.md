@@ -2,6 +2,7 @@
 A beautiful, modern journaling web application built with React and TypeScript for mindfulness and personal reflection.
 
 ## Official Site: https://stillpointjournal.site/
+## https://youtu.be/5eyl-NMBUVk?si=OPId7eYkVXC5d_tu
 
 ![React](https://img.shields.io/badge/React-18.3+-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5+-blue.svg)
